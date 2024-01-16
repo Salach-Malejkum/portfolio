@@ -37,6 +37,12 @@ ol, ul {
 	list-style: none;
 }
 
+.code-block {
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+
 blockquote, q {
 	quotes: none;
 }

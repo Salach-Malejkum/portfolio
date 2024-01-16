@@ -56,12 +56,54 @@
                             <p><b>Engine:</b> Unity<br><b>Version:</b> Unity 2020.3.30f1<br><b>Genre:</b> Memory<br><b>Assets: </b> DALL-E</p>
                             <h3>Description</h3>
                             <span class="image main"><img src="../gifs/memoGame/flip_card.gif" alt="" /></span>
-							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
+							<p>To have the main functionality, that is flipping the card, I have created a script for it, which is presented below. 
+                                Then in the FlipCard script I am calling the setter with changing its current value to the negative of the current one. 
+                                Thanks to making it this way I can call this few lines of code as Flip and use it to flip the card when player clicks it as well as to flip it back</p>
+                            <pre class="code-block">
+private bool isFlipped = false;
+public bool IsFlipped
+{
+    get => isFlipped;
+    set
+    {
+        isFlipped = value;
+        transform.GetChild(0).gameObject.SetActive(!value);
+        transform.GetChild(1).gameObject.SetActive(value);
+    }
+}
+                            </pre>
+                            <p>Below is an image of perhaps the most difficult part, creating cards that cover the screen symmetrically with respect to a point in the center of the screen</p>
                             <span class="image main"><img src="../gifs/memoGame/mid_size.gif" alt="" /></span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
                             <span class="image main"><img src="../gifs/memoGame/big_size.gif.gif" alt="" /></span>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus, vel venenatis mauris vehicula hendrerit.</p>
-                            <p>Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fersapien risus, commodo eget turpis at, elementum convallis elit. Pellentesque enim turpis, hendrerit tristique lorem ipsum dolor.</p>
+                            <p>I had to make a lot of calculations related to possible positions. Eventually comming up with below idea:</p>
+                            <pre class="code-block">
+float screenWidth = Screen.width;
+float screenHeight = Screen.height;
+
+int spawnableRows = 2;
+int spawnableColumns = numOfPairs;
+// Calculate the size of the card based on the screen size
+float cardWidth = screenWidth / (spawnableColumns + 1); // +1 for some padding
+float cardHeight = screenHeight / (spawnableRows + 1); // +1 for some padding
+
+// Calculate the total width and height of all the cards
+float totalCardWidth = spawnableColumns * cardWidth;
+float totalCardHeight = spawnableRows * cardHeight;
+
+// Calculate the initial position and card offset
+Vector3 initialPosition = new Vector3(cardWidth, totalCardHeight, 0);
+Vector3 cardOffset = new Vector3(cardWidth, -cardHeight, 0);
+</pre>
+                            <p>I have chosen limit to 2 rows and then number of columns as number of pairs. With changing number of cards I need a total card width and lenght.
+                                Then I can calculate the initial position and card offset. The initial position is the top left corner of the first card. 
+                                Then I can calculate the position of the next card by adding the card offset to the previous card position.
+                            </p>
+                            <pre class="code-block">
+Vector3 spawnPosition = initialPosition + (Vector3)(cardOffset * new Vector2(column, row));</pre>
+                            <h3>Key takeouts</h3>
+                            <p>I have learned how math is important in games. Choosing the places of things may be really pain without some spatial imagination. 
+                                Another thing is Game Manager, how to make it accessible everywhere in the code, how to communicate different scripts with it. 
+                                And the last but not least thing is the place in the code and way of operating of Game Objects that are already unnecessary, that you can't just delete or deactivate it, sometimes you need to do some adjustments before you proceed with that.</p>
 						</div>
 					</div>
 
