@@ -10,9 +10,12 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
 		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-csharp.min.js"></script>
 		<!-- Wrapper -->
 			<div id="wrapper">
 
@@ -59,8 +62,7 @@
 							<p>To have the main functionality, that is flipping the card, I have created a script for it, which is presented below. 
                                 Then in the FlipCard script I am calling the setter with changing its current value to the negative of the current one. 
                                 Thanks to making it this way I can call this few lines of code as Flip and use it to flip the card when player clicks it as well as to flip it back</p>
-                            <pre class="code-block">
-private bool isFlipped = false;
+                                <pre class="code-block"><code class="language-csharp">private bool isFlipped = false;
 public bool IsFlipped
 {
     get => isFlipped;
@@ -71,13 +73,12 @@ public bool IsFlipped
         transform.GetChild(1).gameObject.SetActive(value);
     }
 }
-                            </pre>
+</code></pre>
                             <p>Below is an image of perhaps the most difficult part, creating cards that cover the screen symmetrically with respect to a point in the center of the screen</p>
                             <span class="image main"><img src="../gifs/memoGame/mid_size.gif" alt="" /></span>
                             <span class="image main"><img src="../gifs/memoGame/big_size.gif.gif" alt="" /></span>
                             <p>I had to make a lot of calculations related to possible positions. Eventually comming up with below idea:</p>
-                            <pre class="code-block">
-float screenWidth = Screen.width;
+<pre class="code-block"><code class="language-csharp">float screenWidth = Screen.width;
 float screenHeight = Screen.height;
 
 int spawnableRows = 2;
@@ -93,13 +94,13 @@ float totalCardHeight = spawnableRows * cardHeight;
 // Calculate the initial position and card offset
 Vector3 initialPosition = new Vector3(cardWidth, totalCardHeight, 0);
 Vector3 cardOffset = new Vector3(cardWidth, -cardHeight, 0);
-</pre>
+</code></pre>
                             <p>I have chosen limit to 2 rows and then number of columns as number of pairs. With changing number of cards I need a total card width and lenght.
                                 Then I can calculate the initial position and card offset. The initial position is the top left corner of the first card. 
                                 Then I can calculate the position of the next card by adding the card offset to the previous card position.
                             </p>
-                            <pre class="code-block">
-Vector3 spawnPosition = initialPosition + (Vector3)(cardOffset * new Vector2(column, row));</pre>
+                            <pre class="code-block"><code class="language-csharp">Vector3 spawnPosition = initialPosition + (Vector3)(cardOffset * new Vector2(column, row));
+</code></pre>
                             <h3>Key takeouts</h3>
                             <p>I have learned how math is important in games. Choosing the places of things may be really pain without some spatial imagination. 
                                 Another thing is Game Manager, how to make it accessible everywhere in the code, how to communicate different scripts with it. 
