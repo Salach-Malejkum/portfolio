@@ -65,14 +65,13 @@
                             </ul>
                             <p><b>Assets: </b> Created by graphic designers</p>
                             <h2>Description</h2>
-                            <p>Game was created during <b>TK Jam 2023</b> during less than 2 days. 
+                            <p>Game was created during <b>TK Jam 2023</b> during less than 2 days in Unreal Engine 5 blueprints. 
                                 That was the first almost full game for the all of us as a team. 
                                 Now I will dive into details. Technical description will be divided into two important parts: player related solutions and the second one, enemy related.</p>
                             <h3>Player</h3>
                             <span class="image main"><img src="../gifs/memoGame/flip_card.gif" alt="" /></span>
-							<p>To have the main functionality, that is flipping the card, I have created a script for it, which is presented below. 
-                                Then in the FlipCard script I am calling the setter with changing its current value to the negative of the current one. 
-                                Thanks to making it this way I can call this few lines of code as Flip and use it to flip the card when player clicks it as well as to flip it back.</p>
+							<p>Here I made code to controll player, add collisions and attack collision.
+                                Also there had to be adjusted looks and animations depending on the actions taken. </p>
                                 <pre class="code-block"><code class="language-csharp">private bool isFlipped = false;
 public bool IsFlipped
 {
