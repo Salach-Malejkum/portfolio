@@ -72,46 +72,20 @@
                             <span class="image main"><img src="../gifs/memoGame/flip_card.gif" alt="" /></span>
 							<p>Here I made code to controll player, add collisions and attack collision.
                                 Also there had to be adjusted looks and animations depending on the actions taken. </p>
-                                <pre class="code-block"><code class="language-csharp">private bool isFlipped = false;
-public bool IsFlipped
-{
-    get => isFlipped;
-    set
-    {
-        isFlipped = value;
-        transform.GetChild(0).gameObject.SetActive(!value);
-        transform.GetChild(1).gameObject.SetActive(value);
-    }
-}
-</code></pre>
+
                             <p><br><br>Below is an image of perhaps the most difficult part, creating cards that cover the screen symmetrically with respect to a point in the center of the screen.</p>
-                            <span class="image main"><img src="../gifs/memoGame/mid_size.gif" alt="" /></span>
                             <span class="image main"><img src="../gifs/memoGame/big_size.gif.gif" alt="" /></span>
                             <h3>Enemy</h3>
-                            <p>I had to make a lot of calculations related to possible positions. Eventually comming up with below idea:</p>
-<pre class="code-block"><code class="language-csharp">float screenWidth = Screen.width;
-float screenHeight = Screen.height;
 
-int spawnableRows = 2;
-int spawnableColumns = numOfPairs;
-// Calculate the size of the card based on the screen size
-float cardWidth = screenWidth / (spawnableColumns + 1); // +1 for some padding
-float cardHeight = screenHeight / (spawnableRows + 1); // +1 for some padding
-
-// Calculate the total width and height of all the cards
-float totalCardWidth = spawnableColumns * cardWidth;
-float totalCardHeight = spawnableRows * cardHeight;
-
-// Calculate the initial position and card offset
-Vector3 initialPosition = new Vector3(cardWidth, totalCardHeight, 0);
-Vector3 cardOffset = new Vector3(cardWidth, -cardHeight, 0);
-</code></pre>
-                            <p>I have chosen limit to 2 rows and then number of columns as number of pairs. With changing number of cards I need a total card width and lenght.
-                                Then I can calculate the initial position and card offset. The initial position is the top left corner of the first card. 
-                                Then I can calculate the position of the next card by adding the card offset to the previous card position.
+                            <p>In this game all of the enemies (2) use the same blueprints for actioms, Behavior Tree and Animations. I will show the most interesting parts below. 
                             </p>
-                            <pre class="code-block"><code class="language-csharp">Vector3 spawnPosition = initialPosition + (Vector3)(cardOffset * new Vector2(column, row));
-</code></pre>
+                            <!-- <span class="image main"><img src="../gifs/sugarWar/player_around.png" alt="" /></span> -->
+                            <p>Starting with the most important part, the Behavior Tree. 
+                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>. 
+                                The first one is the most important, it is the one that is called when the enemy is in range of the player. 
+                                It is also the one that is called when the enemy is attacking the player.
+                            </p>
+
                             <h3>Key takeouts</h3>
                             <p>I have learned how math is important in games. Choosing the places of things may be really pain without some spatial imagination. 
                                 Another thing is Game Manager, how to make it accessible everywhere in the code, how to communicate different scripts with it. 
