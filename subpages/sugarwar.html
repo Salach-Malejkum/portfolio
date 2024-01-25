@@ -81,9 +81,15 @@
                             </p>
                             <!-- <span class="image main"><img src="../gifs/sugarWar/player_around.png" alt="" /></span> -->
                             <p>Starting with the most important part, the Behavior Tree. 
-                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>. 
-                                The first one is the most important, it is the one that is called when the enemy is in range of the player. He will try to attack him.
-                                If player is in range of attack, enemy will hit him. If not, he will attack and then chase him as long as he is in range.
+                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>.
+
+                                Each of them is equally important, so let's start with <b>Attack</b>.
+                                <br><br><b>Attack</b> is called whenever the cooldown for it refreshes and the player is in the hit range. Then the AI performes an animation.
+                                This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.
+
+                                <br><br><b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600.
+                                
+                                <br><br><b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between two points with the speed of 300.
                             </p>
 
                             <h3>Key takeouts</h3>
