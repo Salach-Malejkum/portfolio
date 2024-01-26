@@ -87,9 +87,10 @@
                                 <br><br><b>Attack</b> is called whenever the cooldown for it refreshes and the player is in the hit range. Then the AI performes an animation.
                                 This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.
 
-                                <br><br><b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600.
+                                <br><br><b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600. Then if it is in the hit range, it calls Attack.
                                 
-                                <br><br><b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between two points with the speed of 300.
+                                <br><br><b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points that are chosen withing 300 to 600 from it's current position. 
+								When it reaches the point, it chooses another one and goes there.
                             </p>
 
                             <h3>Key takeouts</h3>
