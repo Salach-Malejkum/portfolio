@@ -77,20 +77,25 @@
                             <span class="image main"><img src="../gifs/memoGame/big_size.gif.gif" alt="" /></span>
                             <h3>Enemy</h3>
 
-                            <p>In this game all of the enemies (2) use the same blueprints for actioms, Behavior Tree and Animations. I will show the most interesting parts below. 
+                            <p>In this game all of the enemies (2) use the same blueprints for actioms, Behavior Tree and Animations.
+							I will show the most interesting parts below. 
                             </p>
-                            <!-- <span class="image main"><img src="../gifs/sugarWar/player_around.png" alt="" /></span> -->
-                            <p>Starting with the most important part, the Behavior Tree. 
-                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>.
+                            <p>Starting with the most important part, the Behavior Tree. It was implemented using Behavior Tree, Blackboard and Tasks<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/AI_tree.PNG" alt="" /></span>
+                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>. One that is not that important is called Jump - this allows the AI to use NavLinks.<br><br>
 
-                                Each of them is equally important, so let's start with <b>Attack</b>.
-                                <br><br><b>Attack</b> is called whenever the cooldown for it refreshes and the player is in the hit range. Then the AI performes an animation.
-                                This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.
+                                Each of them is equally important, so let's start with <b>Attack</b>.<br><br>
 
-                                <br><br><b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600. Then if it is in the hit range, it calls Attack.
-                                
-                                <br><br><b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points that are chosen withing 300 to 600 from it's current position. 
-								When it reaches the point, it chooses another one and goes there.
+                                <b>Attack</b> is called whenever the cooldown for it refreshes and the player is in the hit range. Then the AI performes an animation.
+                                This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/enemy_attack.PNG" alt="" /></span>
+
+                                <b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600. Then if it is in the hit range, it calls Attack.<br><br>
+                                <span class="image main"><img src="../gifs/sugarWar/chase_player.PNG" alt="" /></span>
+								
+                                <b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points that are chosen withing 300 to 600 from it's current position. 
+								When it reaches the point, it chooses another one and goes there.<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/roam_around.PNG" alt="" /></span>
                             </p>
 
                             <h3>Key takeouts</h3>
