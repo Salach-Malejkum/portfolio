@@ -70,22 +70,26 @@
                                 Now I will dive into details. Technical description will be divided into two important parts: player related solutions and the second one, enemy related.</p>
                             
 								<h3>Player</h3>
-                            <span class="image main"><img src="../gifs/memoGame/flip_card.gif" alt="" /></span>
-							<p>Player has the functionality of attacking, moving and losing hp which is reflected on his health bar.
-								Below are few snipets about the player blueprints.
+							<p>Player has the functionality of attacking, moving and losing hp which is reflected on his health bar. As most code of it is from third person character template,
+								I will show only the attack functionality as it was impelemented by me.<br><br>
 
-								<br><br>
-								Let's start with player attack. It is called whenever the player clicks the left mouse button. 
-								Then it checks if the player is not already attacking and if the cooldown is over. And if requirements are met, it calls the animation and sets the cooldown.
-								<br><br>
+								Here is the blueprint for the player attack lock. It locks the player from moving and attacking for 0.2 seconds after the attack, also starting the animation.<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/player_attack_lock.PNG" alt="" /></span>
+
+								Then two things happens. Below you can see the arrow for the player attack.<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/player_attack_arrow.PNG" alt="" /></span>
+
+								When it hits the enemy, it calls the Apply Damage function on it. The second action releases the lock on player actions. Overall the attack takes 0.6 seconds to happend.<br><br>
+								<span class="image main"><img src="../gifs/sugarWar/player_attack_functionality.PNG" alt="" /></span>
+
+								Now let's take a look at the enemy.<br><br>
 							</p>
 
                             <h3>Enemy</h3>
 
                             <p>In this game all of the enemies (2) use the same blueprints for actioms, Behavior Tree and Animations.
-							I will show the most interesting parts below. 
-                            </p>
-                            <p>Starting with the most important part, the Behavior Tree. It was implemented using Behavior Tree, Blackboard and Tasks<br><br>
+								I will show the most interesting parts below. Starting with the most important part, the Behavior Tree. 
+								It was implemented using Behavior Tree, Blackboard and Tasks<br><br>
 								<span class="image main"><img src="../gifs/sugarWar/AI_tree.PNG" alt="" /></span>
                                 It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>. One that is not that important is called Jump - this allows the AI to use NavLinks.<br><br>
 
