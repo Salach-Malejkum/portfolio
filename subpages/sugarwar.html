@@ -70,7 +70,7 @@
                                 Now I will dive into details. Technical description will be divided into two important parts: player related solutions and the second one, enemy related.</p>
                             
 								<h3>Player</h3>
-							<p>Player has the functionality of attacking, moving and losing hp which is reflected on his health bar. As most code of it is from third person character template,
+							<p>Player has the functionality of attacking, moving and losing hp which is reflected on his health bar. As most of the movement code is from third person character template,
 								I will show only the attack functionality as it was impelemented by me.<br><br>
 
 								Here is the blueprint for the player attack lock. It locks the player from moving and attacking for 0.2 seconds after the attack, also starting the animation.<br><br>
@@ -99,18 +99,21 @@
                                 This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.<br><br>
 								<span class="image main"><img src="../gifs/sugarWar/enemy_attack.PNG" alt="" /></span>
 
-                                <b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 600. Then if it is in the hit range, it calls Attack.<br><br>
+                                <b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 300. Then if it is in the hit range, it calls Attack.<br><br>
                                 <span class="image main"><img src="../gifs/sugarWar/chase_player.PNG" alt="" /></span>
 								
-                                <b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points that are chosen withing 300 to 600 from it's current position. 
-								When it reaches the point, it chooses another one and goes there.<br><br>
+                                <b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points (with the same speed as above) that are chosen withing 300 to 600 from it's current position. 
+								When it reaches the point, it waits for a moment and then chooses another one and goes there.<br><br>
 								<span class="image main"><img src="../gifs/sugarWar/roam_around.PNG" alt="" /></span>
                             </p>
 
                             <h3>Key takeouts</h3>
-                            <p>I have learned how math is important in games. Choosing the places of things may be really pain without some spatial imagination. 
-                                Another thing is Game Manager, how to make it accessible everywhere in the code, how to communicate different scripts with it. 
-                                And the last but not least thing is the place in the code and way of operating of Game Objects that are already unnecessary, that you can't just delete or deactivate it, sometimes you need to do some adjustments before you proceed with that.</p>
+                            <p>It was my first time using Unreal Engine 5. Thanks to this opportunity I saw how powerful blueprints are. In less than 2 days we were able to make almost full game.
+								In my opinion blueprints are excellent choice for prototyping and for some simpler tasks. I felt that Behavior Tree is really intuitive and impressive with functionality.
+								Also, there are few things that weren't shown here, that I think are interesting like tricks to use widgets as a movie player or using NavLinks to make AI jump over the gaps.
+								Those things are not that hard to implement, but they are really useful and I am glad that I had the opportunity to learn them. I am planning to deepend my knowledge of animations,
+								that can be complicated and there are few ways to take advantage of them.
+							</p>
 						</div>
 					</div>
 
