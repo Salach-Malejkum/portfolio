@@ -70,47 +70,24 @@
 								The tutorial map was also on my side of responsibilites. Below will be shown the most interesting parts of the code.
                             </p>
                             
-								<h3>Player</h3>
-							<p>Here is the blueprint for the player attack lock. It locks the player from moving and attacking for 0.2 seconds after the attack, also starting the animation.<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/player_attack_lock.PNG" alt="" /></span>
+							<h3>Player</h3>
+							<p>
 
-								Then two things happens. Below you can see the arrow for the player attack.<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/player_attack_arrow.PNG" alt="" /></span>
-
-								When it hits the enemy, it calls the Apply Damage function on it. The second action releases the lock on player actions. Overall the attack takes 0.6 seconds to happend.<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/player_attack_functionality.PNG" alt="" /></span>
-
-								Now let's take a look at the enemy.<br><br>
 							</p>
 
-                            <h3>Enemy</h3>
+							<h3>UI</h3>
+                            <p>
 
-                            <p>In this game all of the enemies (2) use the same blueprints for actioms, Behavior Tree and Animations.
-								I will show the most interesting parts below. Starting with the most important part, the Behavior Tree. 
-								It was implemented using Behavior Tree, Blackboard and Tasks<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/AI_tree.PNG" alt="" /></span>
-                                It is divided into 3 main parts: <b>Attack</b>, <b>Chase</b> and <b>Patrol</b>. One that is not that important is called Jump - this allows the AI to use NavLinks.<br><br>
+							</p>
 
-                                Each of them is equally important, so let's start with <b>Attack</b>.<br><br>
+                            <h3>Weapon</h3>
+                            <p>
 
-                                <b>Attack</b> is called whenever the cooldown for it refreshes and the player is in the hit range. Then the AI performes an animation.
-                                This animation has Draw Sphere and Apply Damage embeded on specific frame of animation, which allows the player to dodge the attack.<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/enemy_attack.PNG" alt="" /></span>
-
-                                <b>Chase</b> is called whenever the player is in the chase range. Then the AI is chasing the player with the speed of 300. Then if it is in the hit range, it calls Attack.<br><br>
-                                <span class="image main"><img src="../gifs/sugarWar/chase_player.PNG" alt="" /></span>
-								
-                                <b>Patrol</b> is called whenever the player is not in the chase range. Then the AI is patrolling between random points (with the same speed as above) that are chosen withing 300 to 600 from it's current position. 
-								When it reaches the point, it waits for a moment and then chooses another one and goes there.<br><br>
-								<span class="image main"><img src="../gifs/sugarWar/roam_around.PNG" alt="" /></span>
-                            </p>
+							</p>
 
                             <h3>Key takeouts</h3>
-                            <p>It was my first time using Unreal Engine 5. Thanks to this opportunity I saw how powerful blueprints are. In less than 2 days we were able to make almost full game.
-								In my opinion blueprints are excellent choice for prototyping and for some simpler tasks. I felt that Behavior Tree is really intuitive and impressive with functionality.
-								Also, there are few things that weren't shown here, that I think are interesting like tricks to use widgets as a movie player or using NavLinks to make AI jump over the gaps.
-								Those things are not that hard to implement, but they are really useful and I am glad that I had the opportunity to learn them. I am planning to deepend my knowledge of animations,
-								that can be complicated and there are few ways to take advantage of them.
+                            <p>
+
 							</p>
 						</div>
 					</div>
