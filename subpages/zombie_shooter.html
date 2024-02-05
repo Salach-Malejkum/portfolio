@@ -72,17 +72,58 @@
                             
 							<h3>Player</h3>
 							<p>
-
+							There are few important parts of the code that I have created for the player.
 							</p>
 
 							<h3>UI</h3>
                             <p>
+							The most important part is pause menu, to stop the game and show the options. I have created a script for it, which is presented below.
+							First is shown the part of the code that stops the game and makes the cursor visable and unlocked. 
+							Then the part of the code that unpause the game and makes the cursor invisable and locked:
+							</p>
+							<pre class="code-block"><code class="language-csharp">Time.timeScale = 0.0f;
+
+//Makes it visable
+Cursor.visible = true;
+//Unlocks the mouse
+Cursor.lockState = CursorLockMode.None;</code></pre><br>
+							<p>Second part:</p>
+							<pre class="code-block"><code class="language-csharp">Time.timeScale = 1.0f;
+//Makes it invisable
+Cursor.visible = false;
+//Locks the mouse in place
+Cursor.lockState = CursorLockMode.Locked;</code></pre><br>
 
 							</p>
 
-                            <h3>Weapon</h3>
+                            <h3>Weapon spawner</h3>
                             <p>
+							To spawn the weapon I have created a script for it, which is presented below. 
+							It first chooses the position of the weapon and then destroys the one that is spawned (if it is spawned). 
+							Then it decides if it should be a melee or ranged weapon and spawns it. Thanks to that approach the game is more dynamic 
+							and the player has to be more adaptive as the weapons is spawned each wave. But the code is not perfect, 
+							as it is not the best approach. It violates SOLID principles. It is not easily extendable and it is not easy to add new weapons to the game.
+							<pre class="code-block"><code class="language-csharp">float x = Random.Range(minVal, maxVal);
+float z = Random.Range(minVal, maxVal);
 
+if (weapon != null)
+{
+	Destroy(weapon);
+}
+
+Vector3 spawnPos = new Vector3(0.0f, 0.0f, 0.0f);
+spawnPos.x = x;
+spawnPos.z = z;
+if (Random.value <= 0.5)
+{
+	spawnPos.y = melee.gameObject.transform.position.y;
+	weapon = Instantiate(melee, spawnPos, Quaternion.identity);
+}
+else
+{
+	spawnPos.y = ranged.gameObject.transform.position.y;
+	weapon = Instantiate(ranged, spawnPos, Quaternion.identity);
+}</code></pre><br>
 							</p>
 
                             <h3>Key takeouts</h3>
