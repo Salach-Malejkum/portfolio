@@ -72,10 +72,57 @@
                             
 							<h3>Player</h3>
 							<p>
-							There are few important parts of the code that I have created for the player.
-							<!-- Place here a few snipets from Player -->
-							<!-- For sure I need here an Attack, LoseHP, LostGame and maybe Movement functions -->
+							There are few important parts of the code that I have created for the player. Below are parts of Attack and Movement functions.
 							</p>
+							<p>
+								First of all, depending on the weapon chosen, we have different clips to play, different for ranged and different for melee.
+Then we select the layerMask and then invert it, thanks to this approach we can interact with all layers except the player's to cast the raycast.
+								<pre class="code-block"><code class="language-csharp">void Attack()
+{
+	if (weapon == "Melee") {
+		int pickedClip = Random.Range(0, swordClips.Length - 1);
+		melee.transform.GetComponent<AudioSource>().PlayOneShot(swordClips[pickedClip]);
+	}
+	else if (weapon == "Ranged") {
+		int pickedClip = Random.Range(0, gunClips.Length - 1);
+		ranged.transform.GetComponent<AudioSource>().PlayOneShot(gunClips[pickedClip]);
+	}
+
+	int layerMask = 1 << 7;
+	layerMask = ~layerMask;
+
+	RaycastHit hit;
+}</code></pre><br>
+Below code describes calculations on Vectors needed to get the player velocity, his movement direction and rotation.
+Combining this with mouse movement we can proceed with movement of the player.
+
+							</p>
+							<p>
+								<pre class="code-block"><code class="language-csharp">void Movement()
+{
+	Vector3 forward = transform.TransformDirection(Vector3.forward);
+	Vector3 right = transform.TransformDirection(Vector3.right);
+
+	Vector3 vel = transform.forward * Input.GetAxis("Vertical") * speed;
+	vSpeed -= gravity * Time.deltaTime;
+	vel.y = vSpeed;
+
+	characterController.Move(vel * Time.deltaTime);
+
+	float curSpeedX = speed * Input.GetAxis("Vertical");
+	float curSpeedY = speed * Input.GetAxis("Horizontal");
+	float movementDirectionY = moveDirection.y;
+	moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+
+	characterController.Move(moveDirection * Time.deltaTime);
+
+	rotationX += -Input.GetAxis("Mouse Y") * lookSpeed;
+	rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
+	playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
+	transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+}</code></pre>
+
+							</p><br>
 
 							<h3>UI</h3>
                             <p>
@@ -130,7 +177,10 @@ else
 
                             <h3>Key takeouts</h3>
                             <p>
-
+							Here I has seen how little time is needed to have a simple yet working and fun game. It lacks polish but has the core mechanics and sounds - where
+							sounds make a lot of good impression. Also adding simple animations like movement or weapon moving on the floor is low effort, but gives much better feeling.
+							Last thing is handling menu and game pause, it wasn't that intuitive at the beggining but after this project I have some
+							knowledge how it can be handled.
 							</p>
 						</div>
 					</div>
