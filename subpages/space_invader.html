@@ -6,7 +6,7 @@
 -->
 <html>
 	<head>
-		<title>Survive If You Can</title>
+		<title>Space Invader</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="../assets/css/main.css" />
@@ -43,94 +43,274 @@
 						<h2>Menu</h2>
 						<ul>
 							<li><a href="../index.html">Home</a></li>
-							<li><a href="../generic.html">Ipsum veroeros</a></li>
-							<li><a href="../generic.html">Tempus etiam</a></li>
-							<li><a href="../generic.html">Consequat dolor</a></li>
-							<li><a href="../elements.html">Elements</a></li>
+							<li><a href="../subpages/moba2v2.html">Moba 2v2</a></li>
+							<li><a href="../subpages/sugarwar.html">Sugar War</a></li>
+							<li><a href="../subpages/memory.html">Memo Game</a></li>
+							<li><a href="../subpages/platformer2d.html">Platformer 2D</a></li>
+							<li><a href="../subpages/bigmode.html">Nightmare Platformer</a></li>
+							<li><a href="../subpages/space_invader.html">Space Invader</a></li>
+							<li><a href="../subpages/zombie_shooter.html">Survive If You Can</a></li>
 						</ul>
 					</nav>
 
 				<!-- Main -->
 					<div id="main">
 						<div class="inner">
-							<h1>Survive If You Can</h1>
-							<span class="image main"><img src="../gifs/zombieShooter/menu.PNG" alt="" /></span>
+							<h1>Space Invader</h1>
+							<span class="image main"><img src="../gifs/spaceInvader/spaceInvaderMenu.png" alt="" /></span>
 							<h2>Technical details</h2>
-                            <p style="margin-bottom: 0;"><b>Engine:</b> Unity<br><b>Version:</b> 2020.3.21f1<br><b>Genre:</b> FPS<br><b>Team of 2 people:</b></p>
-                            <ul style="list-style-type: disc; padding-left: 40px; margin-top: 0; margin-bottom: 0;">
-                                <li>2 programmers.</li>
-                            </ul>
-                            <p><b>Assets: </b> Free from Unity Marketplace</p>
+                            <p style="margin-bottom: 0;"><b>Engine:</b> Unity<br><b>Version:</b> 2020.3.16f1<br><b>Genre:</b> Fixed shooter<br></p>
+                            <p><b>Assets: </b> Free from Unity Marketplace & DALL-E</p>
 
                             <h2>Description</h2>
-                            <p>The game was created as an assessment for a course of study with a friend of mine. 
-								It was one of our first games created and it was done in around 24 hours. 
-								All the voicovers were done by my friend and I was responsible for the programming part.
-								I was responsible for player movement, attack, weapon switching, main and pause menus.
-								The tutorial map was also on my side of responsibilites. Below will be shown the most interesting parts of the code.
-                            </p>
+								<p>This is simple version of Space Invaders where you play vs meteorites to get the high score. If they hit you you lose. 
+									Here I wanted to test how the game settings might work, so even if the game itself is not advanced, the settings were 
+									much more advanced in this case. The game was created fully by me as a programmer with help of DALL-E and free assets.
+									To manage input from the player I have used newInputSystem to get familiar with it.
+								</p>
                             
-							<h3>Player</h3>
+							<h3>Settings</h3>
 							<p>
-							There are few important parts of the code that I have created for the player.
-							<!-- Place here a few snipets from Player -->
-							<!-- For sure I need here an Attack, LoseHP, LostGame and maybe Movement functions -->
+							Below are shown settings that are in the game. Rebinding of actions, screeen size that allows the player to change between Window, 
+							Borderless and Fullscreen options, reseting all to default binding and saving it, so on the next game start the player can use their 
+							prefered options.
 							</p>
-
-							<h3>UI</h3>
-                            <p>
-							The most important part is pause menu, to stop the game and show the options. I have created a script for it, which is presented below.
-							First is shown the part of the code that stops the game and makes the cursor visable and unlocked. 
-							Then the part of the code that unpause the game and makes the cursor invisable and locked:
+							<span class="image main"><img src="../gifs/spaceInvader/spaceInvaderSettings.png" alt="" /></span>
+							<p>
+							Now I will jump straight to the code. First we have ScreenSize function. It is pretty simple as Unity provides simple ways of achieving this change.
 							</p>
-							<pre class="code-block"><code class="language-csharp">Time.timeScale = 0.0f;
-
-//Makes it visable
-Cursor.visible = true;
-//Unlocks the mouse
-Cursor.lockState = CursorLockMode.None;</code></pre><br>
-							<p>Second part:</p>
-							<pre class="code-block"><code class="language-csharp">Time.timeScale = 1.0f;
-//Makes it invisable
-Cursor.visible = false;
-//Locks the mouse in place
-Cursor.lockState = CursorLockMode.Locked;</code></pre><br>
-
-							</p>
-
-                            <h3>Weapon spawner</h3>
-                            <p>
-							To spawn the weapon I have created a script for it, which is presented below. 
-							It first chooses the position of the weapon and then destroys the one that is spawned (if it is spawned). 
-							Then it decides if it should be a melee or ranged weapon and spawns it. Thanks to that approach the game is more dynamic 
-							and the player has to be more adaptive as the weapons is spawned each wave. But the code is not perfect, 
-							as it is not the best approach. It violates SOLID principles. It is not easily extendable and it is not easy to add new weapons to the game.
-							<pre class="code-block"><code class="language-csharp">float x = Random.Range(minVal, maxVal);
-float z = Random.Range(minVal, maxVal);
-
-if (weapon != null)
+							<pre class="code-block"><code class="language-csharp">public void ScreenSize()
 {
-	Destroy(weapon);
-}
-
-Vector3 spawnPos = new Vector3(0.0f, 0.0f, 0.0f);
-spawnPos.x = x;
-spawnPos.z = z;
-if (Random.value <= 0.5)
-{
-	spawnPos.y = melee.gameObject.transform.position.y;
-	weapon = Instantiate(melee, spawnPos, Quaternion.identity);
-}
-else
-{
-	spawnPos.y = ranged.gameObject.transform.position.y;
-	weapon = Instantiate(ranged, spawnPos, Quaternion.identity);
+	Debug.Log("[ScreenSize] Screen size: " + screenModeDropdown.options[screenModeDropdown.value].text);
+	string selectedOptionText = screenModeDropdown.options[screenModeDropdown.value].text;
+	ScreenMode mode = (ScreenMode)System.Enum.Parse(typeof(ScreenMode), selectedOptionText);
+	switch (mode)
+	{
+		case ScreenMode.Fullscreen:
+			Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
+			break;
+		case ScreenMode.Windowed:
+			Screen.fullScreenMode = FullScreenMode.Windowed;
+			break;
+		case ScreenMode.Borderless:
+			Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
+			break;
+	}
 }</code></pre><br>
-							</p>
+<p>
+	Second part is SaveSettings. Where we need to save PlayerPrefs to be able to use them later on another game run.
+	</p>
 
+
+<pre class="code-block"><code class="language-csharp">public void SaveSettings()
+{
+	PlayerPrefs.Save();
+	settingsPanel.SetActive(false);
+	mainMenuPanel.SetActive(true);
+}</code></pre><br>
+							<h3>New Input System</h3>
+                            <p>
+							Here we have two actions, movement and attack, as they are added to this system. To set them up, we need to combine 
+							PlayerInput with InputActions. Then there are two variables MoveAxisValue and FireInput that can be used in other scripts 
+							to handle the logic of attack and movement. This is UserInput script which only handles the player input.
+							</p>
+							<pre class="code-block"><code class="language-csharp">public float  MoveAxisValue { get; private set; }
+public bool FireInput { get; private set; }
+private PlayerInput _playerInput;
+private InputAction _moveAction;
+private InputAction _fireAction;
+
+private void Awake() {
+	if (instance == null)
+	{
+		instance = this;
+	}
+
+	_playerInput = GetComponent<PlayerInput>();
+	SetupInputActions();
+}
+
+private void Update()
+{
+	UpdateInputs();
+}
+
+private void SetupInputActions()
+{
+	_moveAction = _playerInput.actions["Move"];
+	_fireAction = _playerInput.actions["Fire"];
+}
+
+private void UpdateInputs()
+{
+	MoveAxisValue = _moveAction.ReadValue<float>();
+	FireInput = _fireAction.IsPressed();
+}
+</code></pre><br>
+							<h4>Rebinding</h4>
+							<p>
+							To operate on rebindings we modify Unity Sample Rebinding UI project with some modifications. First we exclude mouse while 
+							waiting for keypress, so there will bo no action on the mouse. Then we add ESC as the cancelation button.
+							<pre class="code-block"><code class="language-csharp">m_RebindOperation = action.PerformInteractiveRebinding(bindingIndex)
+.WithControlsExcluding("<Mouse>") // this excludes mouse
+.WithCancelingThrough("<Keyboard>/escape") // this canceles rebindings
+.OnCancel(</code></pre>
+							</p>
+							<p>
+							We start with single reset of the binding to default. This functionality is connected to the button of specific action.
+							We first get the InputBinding and what was the oldPath and then find this action in the map of actions, so we can proceed with reseting. 
+							It is important to take into account the composite and normal bindigns here. If the binding is composite we have to run the loop for other 
+							parts of this action.
+							Code for this is shown below.
+							<pre class="code-block"><code class="language-csharp">private void ResetBinding(InputAction action, int bindingIndex)
+{
+	InputBinding newBinding = action.bindings[bindingIndex];
+	string oldOverridePath = newBinding.overridePath;
+
+	action.RemoveBindingOverride(bindingIndex);
+	int currentIndex = -1;
+
+	foreach (InputAction otherAction in action.actionMap.actions)
+	{
+		currentIndex++;
+		InputBinding currentBinding = action.actionMap.bindings[currentIndex];
+
+		if (otherAction == action)
+		{
+			if (newBinding.isPartOfComposite)
+			{
+				if (currentBinding.overridePath == newBinding.path)
+				{
+					otherAction.ApplyBindingOverride(currentIndex, oldOverridePath);
+				}
+			}
+			else
+			{
+				continue;
+			}
+		}
+
+		for (int i = 0; i < otherAction.bindings.Count; i++)
+		{
+			InputBinding binding = otherAction.bindings[i];
+			if (binding.overridePath == newBinding.path)
+			{
+				otherAction.ApplyBindingOverride(i, oldOverridePath);
+			}
+		}
+	}
+}</code></pre><br></p>
+
+						<p>
+							To avoid assigning one key to few actions we need to verify whether they are any duplicates. The first function is created exactly for this purpose
+							We get the action, we get the bindingIndex and check whether this key is already assigned to the other action. There are two cases: first is just normal key binding 
+							and the second one is composite. The second option is more complicated, because if we find that it is already assigned, we have to check where it is assigned, so we need 
+							to loop threw the composite to find it. Then we return the bool signaling whether there are duplicated for it or not. Code for this is below.
+						<pre class="code-block"><code class="language-csharp">private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompositeParts = false)
+{
+	InputBinding newBinding = action.bindings[bindingIndex];
+	int currentIndex = -1;
+
+	foreach (InputBinding binding in action.actionMap.bindings)
+	{
+		currentIndex++;
+
+		if (binding.action == newBinding.action)
+		{
+			if (binding.isPartOfComposite && currentIndex != bindingIndex)
+			{
+				if (binding.effectivePath == newBinding.effectivePath)
+				{
+					Debug.Log("[CheckDuplicateBindings] Duplicate binding found in composite: " + newBinding.effectivePath);
+					return true;
+				}
+			}
+			else
+			{
+				continue;
+			}
+		}
+
+
+		if (binding.effectivePath == newBinding.effectivePath)
+		{
+			Debug.Log("[CheckDuplicateBindings] Duplicate binding found: " + newBinding.effectivePath);
+			return true;
+		}
+	}
+
+	if (allCompositeParts)
+	{
+		for (int i = 1; i < bindingIndex; i++)
+		{
+			if (action.bindings[i].effectivePath == newBinding.overridePath)
+			{
+				Debug.Log("[CheckDuplicateBindings] Duplicate binding found: " + newBinding.effectivePath);
+				return true;
+			}
+		}
+	}
+
+	return false;
+}</code></pre><br>
+</p>
+
+			<p>
+				Then there is a main function called PerformInteractiveRebind where we use the above code. Here you can see the part that was changed, first we need to add  
+				variable to save the oldBinding of the action, and to be able to change the actions data it has to be disabled. Then when the operation completes, it is necessary 
+				to verify whether the new binding is already assigned somewhere else, if it is, the current action gets the binding and leaves its old binding for the other action. 
+				Making it this way, there is no way to leave the actions without bindings, which is really important in this game. Code is shown below.
+	<pre class="code-block"><code class="language-csharp">private void PerformInteractiveRebind(InputAction action, int bindingIndex, bool allCompositeParts = false)
+	{
+		{...}
+	
+		InputBinding oldBinding = action.bindings[bindingIndex];
+		// disable action before use to prevent the error
+		action.Disable();
+	
+		// Configure the rebind.
+		m_RebindOperation = action.PerformInteractiveRebinding(bindingIndex)
+			.WithControlsExcluding("<Mouse>")
+			.WithCancelingThrough("<Keyboard>/escape")
+			.OnCancel(
+				{...}
+			.OnComplete(
+				operation =>
+				{
+					action.Enable();
+					m_RebindOverlay?.SetActive(false);
+					m_RebindStopEvent?.Invoke(this, operation);
+	
+					// Check for duplicates in binding
+					if (CheckDuplicateBindings(action, bindingIndex, allCompositeParts))
+					{
+						// oldBinding.effectivePath
+						action.RemoveBindingOverride(bindingIndex);
+						// bind it back
+						action.ApplyBindingOverride(bindingIndex, oldBinding.effectivePath);
+						CleanUp();
+						PerformInteractiveRebind(action, bindingIndex, allCompositeParts);
+						return;
+					}
+	
+					UpdateBindingDisplay();
+					CleanUp();
+	
+					{...}
+				});
+	
+		{...}
+	}</code></pre><br>
+	</p>
                             <h3>Key takeouts</h3>
                             <p>
-
+								It was my first taste of the more advanced way of creating settings, 
+								where you can change bindings or adjust the screen size. As the settings are one of the most 
+								important parts of the game, where the player can adjust the game to his preferences, it 
+								was a good learning point. Another thing was the NewInputSystem, which in my opinion is poorly 
+								described compared to the old one, was really interesting to work with. Now I also learned how 
+								important it is to be able to extend the existing projects or adapt them to our needs, which was 
+								done with a somewhat buggy RebindingUI Unity project.
 							</p>
 						</div>
 					</div>
