@@ -57,80 +57,96 @@
 					<div id="main">
 						<div class="inner">
 							<h1>Platformer 2D</h1>
-							<span class="image main"><img src="../gifs/zombieShooter/menu.PNG" alt="" /></span>
+							<span class="image main"><img src="../gifs/platformer2d/frontPhoto.png" alt="" /></span>
 							<h2>Technical details</h2>
                             <p style="margin-bottom: 0;"><b>Engine:</b> Unity<br><b>Version:</b> 2020.3.30f1<br><b>Genre:</b> Platformer<br>
                             <p><b>Assets: </b> Free from Unity Marketplace</p>
 
                             <h2>Description</h2>
-                            <p>The game was created as an assessment for a course of study with a friend of mine. 
-								It was one of our first games created and it was done in around 24 hours. 
-								All the voicovers were done by my friend and I was responsible for the programming part.
-								I was responsible for player movement, attack, weapon switching, main and pause menus.
-								The tutorial map was also on my side of responsibilites. Below will be shown the most interesting parts of the code.
+                            <p>
+								The game was created alone by me. I have tried to make it accessible for mobile devices as well. Which was an interesting 
+								experience using Apple device. I tried to polish it a bit, so the feeling is better than the pure mechanics game. There are sounds 
+								animation, pause menu. One thing that is not shown in the code below is delay in destroying objects related to the animation of death / collect. 
+								Other interesting parts are below.
                             </p>
                             
-							<h3>Player</h3>
+							<h3>Enemy Platform Boundaries</h3>
+							<span class="image main"><img src="../gifs/platformer2d/enemiesWalking.gif" alt="" /></span>
 							<p>
-							There are few important parts of the code that I have created for the player.
-							<!-- Place here a few snipets from Player -->
-							<!-- For sure I need here an Attack, LoseHP, LostGame and maybe Movement functions -->
+								GIF shows how the enemy moves on platform. He can be placed on any platform and will move from one side to another. It was achieved by checking whether 
+								there is nothing below the enemy. If there is nothing, the enemy changes direction. Below is the code responsible for that.
 							</p>
-
-							<h3>UI</h3>
-                            <p>
-							The most important part is pause menu, to stop the game and show the options. I have created a script for it, which is presented below.
-							First is shown the part of the code that stops the game and makes the cursor visable and unlocked. 
-							Then the part of the code that unpause the game and makes the cursor invisable and locked:
-							</p>
-							<pre class="code-block"><code class="language-csharp">Time.timeScale = 0.0f;
-
-//Makes it visable
-Cursor.visible = true;
-//Unlocks the mouse
-Cursor.lockState = CursorLockMode.None;</code></pre><br>
-							<p>Second part:</p>
-							<pre class="code-block"><code class="language-csharp">Time.timeScale = 1.0f;
-//Makes it invisable
-Cursor.visible = false;
-//Locks the mouse in place
-Cursor.lockState = CursorLockMode.Locked;</code></pre><br>
-
-							</p>
-
-                            <h3>Weapon spawner</h3>
-                            <p>
-							To spawn the weapon I have created a script for it, which is presented below. 
-							It first chooses the position of the weapon and then destroys the one that is spawned (if it is spawned). 
-							Then it decides if it should be a melee or ranged weapon and spawns it. Thanks to that approach the game is more dynamic 
-							and the player has to be more adaptive as the weapons is spawned each wave. But the code is not perfect, 
-							as it is not the best approach. It violates SOLID principles. It is not easily extendable and it is not easy to add new weapons to the game.
-							<pre class="code-block"><code class="language-csharp">float x = Random.Range(minVal, maxVal);
-float z = Random.Range(minVal, maxVal);
-
-if (weapon != null)
+							<pre class="code-block"><code class="language-csharp">void CheckPlatformBoundaries()
 {
-	Destroy(weapon);
-}
-
-Vector3 spawnPos = new Vector3(0.0f, 0.0f, 0.0f);
-spawnPos.x = x;
-spawnPos.z = z;
-if (Random.value <= 0.5)
-{
-	spawnPos.y = melee.gameObject.transform.position.y;
-	weapon = Instantiate(melee, spawnPos, Quaternion.identity);
-}
-else
-{
-	spawnPos.y = ranged.gameObject.transform.position.y;
-	weapon = Instantiate(ranged, spawnPos, Quaternion.identity);
+	Vector3 raycastDir = (moveLeft) ? Vector3.left : Vector3.right;
+	RaycastHit2D hit = Physics2D.Raycast(transform.position + 0.1f * raycastDir + new Vector3(0f, -0.5f, 0f), -Vector2.up, 2f);
+	if (hit.collider == null)
+	{
+		moveLeft = !moveLeft;
+		spriteRenderer.flipX = moveLeft;
+	}
 }</code></pre><br>
-							</p>
 
+							<h3>Player & background movement</h3>
+							<span class="image main"><img src="../gifs/platformer2d/runningAndBackground.gif" alt="" /></span>
+                            <p>
+							Here when the player moves the background moves as well. It is done by moving the background in the opposite direction to the player. But each part 
+							moves in the different way. Script for both of them is presented below.
+							</p>
+							<pre class="code-block"><code class="language-csharp">void Update() // In background script
+{
+	if (Input.GetKey(KeyCode.A) || movementLeft)
+	{
+		x = transform.position.x;
+		x += -speed * Time.deltaTime;
+		transform.position = new Vector3 (x, transform.position.y, transform.position.z);
+
+		if (x >= PontoOriginal)
+		{
+			x = PontoDeDestino;
+			transform.position = new Vector3 (x, transform.position.y, transform.position.z);
+		}
+	}
+	else if (Input.GetKey(KeyCode.D) || movementRight)
+	{
+		x = transform.position.x;
+		x += speed * Time.deltaTime;
+		transform.position = new Vector3 (x, transform.position.y, transform.position.z);
+
+		if (x <= PontoDeDestino)
+		{
+			x = PontoOriginal;
+			transform.position = new Vector3 (x, transform.position.y, transform.position.z);
+		}
+	}
+}</code></pre><br>
+							<p>Player part, which handles the mobile devices as well as PC, here the movementLeft & movementRight are booleans 
+								that are set depending on buttons pressed on phone screen:</p>
+							<pre class="code-block"><code class="language-csharp">public void Move() // In player script
+{
+	if (!canMove)
+	{
+		return;
+	}
+
+	if (Input.GetKey(KeyCode.A) || movementLeft)
+	{
+		transform.Translate(speed * Time.deltaTime, 0f, 0f);
+	}
+	else if (Input.GetKey(KeyCode.D) || movementRight)
+	{
+		transform.Translate(-speed * Time.deltaTime, 0f, 0f);
+	}
+}</code></pre><br>
+
+							</p>
                             <h3>Key takeouts</h3>
                             <p>
-
+								As platformer like this allows you to implement simple mechanics, I also focused on animations and transitions between them, adding sounds and interactive background. 
+								All of this combined together provides a good experience for the player. After this project I feel more confident and comfortable with Animation and Transitions between them. 
+								I already have used that knowledge in other projects. Another things is simple AI that can be easily reused - the enemies that are moving on the platforms. Next things I tried 
+								was support for mobile devices - adding buttons and being able to control it trhogh the phone - but I am not confident with this yet. Last thing is pause menu. It has shown me how 
+								to properly stop the game and resume it. 
 							</p>
 						</div>
 					</div>
