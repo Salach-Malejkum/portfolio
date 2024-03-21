@@ -205,7 +205,7 @@ private void UpdateInputs()
 							To avoid assigning one key to few actions we need to verify whether they are any duplicates. The first function is created exactly for this purpose.
 							We get the action, we get the bindingIndex and check whether this key is already assigned to the other action. There are two cases: first is just normal key binding 
 							and the second one is composite. The second option is more complicated, because if we find that it is already assigned, we have to check where it is assigned, so we need 
-							to loop threw the composite to find it. Then we return the bool signaling whether there are duplicated for it or not. Code for this is below.
+							to loop through the composite to find it. Then we return the bool signaling whether there are duplicated for it or not. Code for this is below.
 						<pre class="code-block"><code class="language-csharp">private bool CheckDuplicateBindings(InputAction action, int bindingIndex, bool allCompositeParts = false)
 {
 	InputBinding newBinding = action.bindings[bindingIndex];
