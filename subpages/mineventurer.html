@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>MineVenturer</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-gdscript.min.js"></script>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header">
+					<div class="inner">
+
+						<!-- Logo -->
+							<a href="../index.html" class="logo">
+								<span class="symbol"><img src="../images/portfolio_img.png" alt="" /></span><span class="title">Portfolio</span>
+							</a>
+
+						<!-- Nav -->
+							<nav>
+								<ul>
+									<li><a href="#menu">Menu</a></li>
+								</ul>
+							</nav>
+
+					</div>
+				</header>
+
+			<!-- Menu -->
+				<nav id="menu">
+					<h2>Menu</h2>
+					<ul>
+						<li><a href="../index.html">Home</a></li>
+						<li><a href="../subpages/moba2v2.html">Moba 2v2</a></li>
+						<li><a href="../subpages/sugarwar.html">Sugar War</a></li>
+						<li><a href="../subpages/memory.html">Memo Game</a></li>
+						<li><a href="../subpages/platformer2d.html">MineVenturer</a></li>
+						<li><a href="../subpages/bigmode.html">Nightmare Platformer</a></li>
+						<li><a href="../subpages/space_invader.html">Space Invader</a></li>
+						<li><a href="../subpages/zombie_shooter.html">Survive If You Can</a></li>
+					</ul>
+				</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>MineVenturer</h1>
+							<span class="image main"><img src="../images/mineventurer.jpg" alt="" /></span>
+							<h2>Technical details</h2>
+                            <p style="margin-bottom: 0;"><b>Engine:</b> Godot<br>
+								<b>Version:</b> 4.3<br>
+								<b>Genre:</b> Survival
+								<br><b>Team of 2 people:</b><ul style="list-style-type: disc; padding-left: 40px; margin-top: 0; margin-bottom: 0;">
+									<li>me as a programmer and level designer,</li>
+									<li>my friend as a programmer and 2D asset creator.</li>
+								</ul>
+                            <p><b>Assets: </b> Free from Itch.io, created by my teammate, provided by organizators.
+							<br><b>Itch.io: </b><a href="https://salach-malejkum.itch.io/mineventurer">Link</a>
+							<br><b>Code: </b><a href="https://gitlab.com/gamejam2023/14c-game-jam">Link</a>
+						</p>
+
+                            <h2>Description</h2>
+                            <p>
+								Game was created during <b>14C Game Jam</b> in Zabrze in coal mine 300m underground in 24h. We did secure <b>2nd place</b> with it. The game jam theme was "In between the time", which we 
+								interpreted in our main game mechanic. That is, time being stopped when player is moving, and the time resuming when the player stops moving. As a programmer I was responsible 
+								for player movement, camera, enemy path following and the time mechanic. Other responsibilities included: audio, adding main menu and designing the level. I will describe broader 24h achievements 
+								like audio system (description available in project Blessed Ones), main game mechanic as I think that simple solutions might be smart especially during game jams.
+                            </p>
+                            <h3>Time-based main game mechanic</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/5YxtmMNAuMo" 
+							title="YouTube video player" frameborder="0" 
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+							allowfullscreen></iframe>
+                            <p>
+							Core mechanic is pretty simple - when player is moving, the time is stopped, when player stops, the time is resumed. This was achieved using globaly available singleton GameManager, which 
+							check the player movement input. Below is the code responsible for that. Simple and effective.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Node
+
+@export var is_player_moving: bool = false;
+
+
+func _process(delta):
+	var movement_vect = Input.get_vector("Move left", "Move right", "Move up", "Move down")
+	if movement_vect.length() == 0:
+		is_player_moving = false
+	else:
+		is_player_moving = true</code></pre><br>
+							<h3>Enemy path system</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/UH3bY3qqt3w" 
+							title="YouTube video player" frameborder="0" 
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+							allowfullscreen></iframe>
+							<p>
+								Enemies are following the previously defined path that can be adjusted depending on the level. The path is defined by the points that are placed on the map. 
+								Then there are 2 types of enemies that are following the path - one is moving one way and the other one is moving the opposite way. Below is the code responsible for that.
+								In _process function we check the current state of the game, which is available in GameManager singleton described above. Then in the move_along_path function I am moving the enemy along the path. 
+								Here the bool value reverse_path is responsible for the direction of the enemy.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Path3D
+
+@onready var path_follow: PathFollow3D = $PathFollow3D
+@onready var enemy = $PathFollow3D/Enemy
+
+@export var reverse_path: bool = false;
+
+
+func move_along_path(delta):
+	if reverse_path:
+		path_follow.progress -= delta * enemy.SPEED
+	else:
+		path_follow.progress += delta * enemy.SPEED
+
+
+func _process(delta):
+	if !GameManager.is_player_moving and is_instance_valid(enemy):
+		move_along_path(delta)</code></pre><br>
+							<h3>Enemy sees you shader</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/h-PzWFiDaWw" 
+							title="YouTube video player"></iframe>
+							<p>
+								Last interesting part is shader for in player's UI for visual clue about whether the enemy sees you or not. The shader is changing the color of the square at the edges of the screen. 
+								When the enemy sees you, the square is red, when not, the square is green. Also it pulses depending on TIME and sine function. Below is the code responsible for that.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">shader_type canvas_item;
+
+
+uniform vec3 color_undetected: source_color;
+uniform vec3 color_detected: source_color;
+uniform bool is_detected;
+uniform float adjust_albedo: hint_range(0.0, 1.0, 0.1);
+
+# Defining the square at the edges of the screen for visual hint
+vec4 square(vec2 uv, float width)
+{
+	uv = uv * 2.0 - 1.0;
+
+	vec2 abs_uv = abs(uv.xy);
+	float square = smoothstep(width - abs(sin(TIME * 2.)) / 5., width, max(abs_uv.x, abs_uv.y));
+
+	return vec4(vec3(1. - square), square * adjust_albedo);
+}
+
+
+# Change color on detection
+vec3 change_color_on_detection(vec3 color)
+{
+	if (is_detected)
+	{
+		color += color_detected;
+	}
+	else
+	{
+		color += color_undetected;
+	}
+
+	return color;
+}
+
+
+# Process with specified color and make the square pulse
+void fragment() {
+	vec4 square_inst = square(UV, 1);
+	vec3 color = square_inst.xyz;
+	color = change_color_on_detection(color);
+
+	COLOR = vec4(color, square_inst.a);
+}</code></pre><br>
+                            <h3>Key takeouts</h3>
+                            <p>
+								That was my first stationary game jam and I think that was one of the most fun and entertaining experiences I had. The game was created in 24h and I think that the time mechanic was a good choice. 
+								Compared to previous online game jams and that's much different experience. I have learned how to work under pressure and how to make quick decisions. 
+								Also I have learned how to make simple yet effective solutions and reuse previously created code - here it was main menu and audio system functionality. 
+								I have learned how to make simple shaders and how to use them in the game. I have learned how to make simple yet effective and adjustable AI that is following the path. Tight time constraints 
+								allowed me to focus on the most important things and not to waste time on unnecessary things. Thanks to that the game has menu, audio, playable level with enemies and simple puzzle.
+							</p>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>Contact</h2>
+								<p><b>Did you like my projects?</b>
+									If so, <b>feel free to contact me</b> for potential collaboration - permanent work or outsourcing.</p>
+								<ul class="icons">
+									<li><a href="https://github.com/Salach-Malejkum" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="https://www.linkedin.com/in/mateusz-salach1/" class="icon brands style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="mailto:mateuszsalach00@gmail.com" class="icon solid style2 fa-envelope" id="emailLink"><span class="label">Email</span></a></li>
+									<script src="assets/js/copymail.js"></script>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
