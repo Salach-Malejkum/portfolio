@@ -76,7 +76,7 @@
 								Game was created during <b>14C Game Jam</b> in Zabrze in coal mine 300m underground in 24h. We did secure <b>2nd place</b> with it. The game jam theme was "In between the time", which we 
 								interpreted in our main game mechanic. That is, time being stopped when player is moving, and the time resuming when the player stops moving. As a programmer I was responsible 
 								for player movement, camera, enemy path following and the time mechanic. Other responsibilities included: audio, adding main menu and designing the level. I will describe broader 24h achievements 
-								like audio system (description available in project Blessed Ones), main game mechanic as I think that simple solutions might be smart especially during game jams.
+								like main game mechanic, enemy path system and shader for visual clue as I think that simple solutions might be smart especially during game jams.
                             </p>
                             <h3>Time-based main game mechanic</h3>
 							<iframe width="560" height="315" src="https://www.youtube.com/embed/5YxtmMNAuMo" 
@@ -85,7 +85,7 @@
 							allowfullscreen></iframe>
                             <p>
 							Core mechanic is pretty simple - when player is moving, the time is stopped, when player stops, the time is resumed. This was achieved using globaly available singleton GameManager, which 
-							check the player movement input. Below is the code responsible for that. Simple and effective.
+							checks the player movement input. Below is the code responsible for that. Simple and effective.
 							</p>
 							<pre class="code-block"><code class="language-gdscript">extends Node
 
@@ -106,8 +106,8 @@ func _process(delta):
 							<p>
 								Enemies are following the previously defined path that can be adjusted depending on the level. The path is defined by the points that are placed on the map. 
 								Then there are 2 types of enemies that are following the path - one is moving one way and the other one is moving the opposite way. Below is the code responsible for that.
-								In _process function we check the current state of the game, which is available in GameManager singleton described above. Then in the move_along_path function I am moving the enemy along the path. 
-								Here the bool value reverse_path is responsible for the direction of the enemy.
+								In <i>_process</i> function we check the current state of the game, which is available in GameManager singleton described above. Then in the <i>move_along_path</i> function I am moving the enemy along the path. 
+								Here the bool value <i>reverse_path</i> is responsible for the direction of the enemy.
 							</p>
 							<pre class="code-block"><code class="language-gdscript">extends Path3D
 
@@ -180,9 +180,9 @@ void fragment() {
 }</code></pre><br>
                             <h3>Key takeouts</h3>
                             <p>
-								That was my first stationary game jam and I think that was one of the most fun and entertaining experiences I had. The game was created in 24h and I think that the time mechanic was a good choice. 
-								Compared to previous online game jams and that's much different experience. I have learned how to work under pressure and how to make quick decisions. 
-								Also I have learned how to make simple yet effective solutions and reuse previously created code - here it was main menu and audio system functionality. 
+								That was my first stationary game jam and I think that is much different experience than the online one. You can feel the atmosphere, be there with other people and have a fully game jam experience. 
+								The game was created in 24h and I think that the time mechanic was a good choice for that period of time. I have learned how to work under pressure and how to make quick decisions to complete a game. 
+								Also I have learned how to make simple yet effective solutions and reuse previously created code - here it was main menu and audio system functionality reused from <i><a href='https://salach-malejkum.github.io/portfolio/subpages/theblessedones.html'>The Blessed Ones</a></i> project. 
 								I have learned how to make simple shaders and how to use them in the game. I have learned how to make simple yet effective and adjustable AI that is following the path. Tight time constraints 
 								allowed me to focus on the most important things and not to waste time on unnecessary things. Thanks to that the game has menu, audio, playable level with enemies and simple puzzle.
 							</p>
