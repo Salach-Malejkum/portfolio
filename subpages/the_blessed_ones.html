@@ -1,0 +1,378 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>The Blessed Ones</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-gdscript.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-c.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-cpp.min.js"></script>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header">
+					<div class="inner">
+
+						<!-- Logo -->
+							<a href="../index.html" class="logo">
+								<span class="symbol"><img src="../images/portfolio_img.png" alt="" /></span><span class="title">Portfolio</span>
+							</a>
+
+						<!-- Nav -->
+							<nav>
+								<ul>
+									<li><a href="#menu">Menu</a></li>
+								</ul>
+							</nav>
+
+					</div>
+				</header>
+
+			<!-- Menu -->
+				<nav id="menu">
+					<h2>Menu</h2>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="subpages/moba2v2.html">Moba 2v2</a></li>
+						<li><a href="subpages/sugarwar.html">Sugar War</a></li>
+						<li><a href="subpages/memory.html">Memo Game</a></li>
+						<li><a href="subpages/mineventurer.html">MineVenturer</a></li>
+						<li><a href="subpages/the_blessed_ones.html">MineVenturer</a></li>
+						<li><a href="subpages/platformer2d.html">Platformer 2D</a></li>
+						<li><a href="subpages/bigmode.html">Nightmare Platformer</a></li>
+						<li><a href="subpages/space_invader.html">Space Invader</a></li>
+						<li><a href="subpages/zombie_shooter.html">Survive If You Can</a></li>
+					</ul>
+				</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>The Blessed Ones</h1>
+							<span class="image main"><img src="/images/theblessedones.gif" alt="" /></span>
+							<h2>Technical details</h2>
+                            <p style="margin-bottom: 0;"><b>Engine:</b> Godot<br>
+							<b>Version:</b> 4.2<br>
+							<b>Genre:</b> Survival game<br>
+							<b>Team of 2 people:</b><ul style="list-style-type: disc; padding-left: 40px; margin-top: 0; margin-bottom: 0;">
+								<li>me as a programmer, level designer, audio designer, light desinger</li>
+								<li>my friend as a programmer, 2D asset and tutorial creator.</li>
+							</ul>
+                            <p><b>Assets: </b>Created by my team member, audio from Zapsplat<br>
+							<b>Itch.io: </b><a href="https://legitcheems.itch.io/blessed-ones">Link</a><br>
+							<b>Code: </b><a href="https://github.com/Salach-Malejkum/pirate-software">Link</a></p>
+
+                            <h2>Description</h2>
+                            <p>The game idea was created for <b>Pirate Jam 15</b>, during 2 weeks time period. We were in <b>top 20%</b> among 2 384 submissions. I spent few hours for few days to make my concept happen. There are 2 core mechanics - 
+								changing the gravity and when you kill enemies you enter nightmare mode, where everything changes colors and enemies can shoot you. Killing enemies is optional 
+								for this reason. To make this idea working I had to came up with some solutions in my code, which will be shown later on.
+                            </p>
+                            <h3>Audio system</h3>
+							<p>
+								I have created reusable audio system, which is used in the game. It is based on the singleton pattern. You provide maps with sound names and their path, which can be then played by the name 
+								in the specific place. Also for longer sounds, you can define what signal kills them. One more thing is movement sound which is randomised based on provided table of sounds. 
+								This dynamic sound creation allows us to cover most of the audio in the game and adjust it as needed for other games. Music & SFX have different setting sliders for their volume level. 
+								The code for this system is shown below.
+								
+								It is used in the player, enemies and the game manager. The code for this system is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">var sfx = {
+	"door_open": preload("res://Audio/door_open.mp3"),
+	# more sounds
+}
+
+var timed_sfx = {
+	"steam_engine": preload("res://Audio/steam_engine_running.mp3"),
+	# more sounds
+}
+
+var movement_sfx = [
+	preload("res://Audio/player_move_1.mp3"),
+	# more sounds
+]
+							
+
+
+# Add audio stream player to the bus, which volume can be changed in the game
+func add_to_bus(asp, sfx_name="default"):
+	if sfx_name in music_sfx_names:
+		asp.bus = "Music"
+	else:
+		asp.bus = "SFX"
+	
+	return asp
+
+
+# Play short sound effect
+func play_sfx(sfx_name: String):
+	if sfx.has(sfx_name):
+		var asp = AudioStreamPlayer.new()
+		asp.stream = sfx[sfx_name]
+		asp.name = "SFX"
+		asp = add_to_bus(asp, sfx_name)
+		
+		add_child(asp)
+		asp.play()
+		
+		await asp.finished
+		asp.queue_free()
+
+
+# Play sound effect with signal
+func play_timed_sfx(sfx_name: String, signal_name):
+	if timed_sfx.has(sfx_name):
+		var asp = AudioStreamPlayer.new()
+		asp.stream = timed_sfx[sfx_name]
+		if sfx_name == "level_bg":
+			asp.name = "level_bg"
+		else:
+			asp.name = "Timed_SFX"
+		asp = add_to_bus(asp, sfx_name)
+		
+		add_child(asp)
+		asp.play()
+		
+		await signal_name
+		if asp != null:
+			asp.queue_free()
+
+
+# Play random movement sound effect
+func random_movement_sfx():
+	if is_movement_running:
+		return
+
+	is_movement_running = true
+	var asp = AudioStreamPlayer.new()
+	asp.stream = movement_sfx[randi() % movement_sfx.size()]
+	asp.name = "Movement_SFX"
+	asp = add_to_bus(asp)
+
+	add_child(asp)
+	asp.play()
+
+	await asp.finished
+	asp.queue_free()
+	is_movement_running = false</code></pre><br>
+							<h3>Circle in shader</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/xo-JxSOjTcM" 
+							title="YouTube video player"></iframe>
+							<p>
+								It was my first time with shaders, here I have created a simple circle which radius is changing based on the passed value. It allows 
+								us to have a nice effect during scene transitions. It is scaled to the size of the screen, so it is machine independent. The code for this shader is shown below.
+							</p>
+							<pre class="code-block"><code class="language-cpp">shader_type canvas_item;
+
+uniform vec2 u_resolution;
+uniform float progress;
+
+void vertex() {
+	UV = UV * 2. - 1.;
+	UV.x *= u_resolution.x / u_resolution.y;
+}
+
+void fragment() {
+	float d = length(UV);
+	
+	d = sin(d / 5.+ progress);
+	d = abs(d);
+	d = step(0.3, d);
+	vec3 color = vec3(1. - d);
+	COLOR = vec4(color, d);
+}</code></pre><br>
+
+							<h3>Heat disortion shader</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/tAyVjOMDjZY" 
+							title="YouTube video player"></iframe>
+							<p>
+								Another shader I have created is heat distortion. It is used in the game to make the game more dynamic and interesting. Each place that is lit with fire has this effect. 
+								As the WebGL version of the game is not supporting this shader, I have recorded the effect in the editor. The code for this shader is shown below. I have used noise texture to make adjustable distortion.
+								Also the speed and strength of the distortion can be changed in the editor.
+							</p>
+							<pre class="code-block"><code class="language-cpp">shader_type canvas_item;
+render_mode unshaded;
+
+uniform sampler2D screen_texture: hint_screen_texture;
+uniform sampler2D noise_texture: repeat_enable;
+uniform float speed: hint_range(0.02, 0.1) = 0.01;
+uniform float strength: hint_range(0.001, 0.03) = 0.02;
+uniform vec2 direction;
+
+void fragment() {
+	float noise = texture(noise_texture, UV + TIME * speed).r;
+	vec2 disortion = vec2(noise) * direction;
+	COLOR = texture(screen_texture, SCREEN_UV + disortion - disortion * strength / 2.);
+}</code></pre><br>
+
+							<h3>Camera shake</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/N74ZdjjU7t0" 
+							title="YouTube video player"></iframe>
+							<p>
+								Next thing is camera shake script. It is used in the game for one kind of enemy attack. The shake length, fade and strength can be changed in the editor. Code works by changing the offset of the camera, then lerping it back to the original position.
+								Everything depending on starting and ending signal. The code for this script is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Camera2D
+
+
+@export var random_strength: float = 30.0
+@export var shake_fade: float = 5.0
+@export var shaking_length: float = 1.0
+
+var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+var shake_strength: float = 0.0
+var is_shaking: bool = false
+var timer: Timer
+
+signal shaking_stopped
+
+
+# (...) Connect signal to apply_shake and stop_shaking functions
+
+
+func _process(delta: float):
+	if !is_shaking:
+		shake_strength = lerpf(shake_strength, 0, shake_fade * delta)
+		
+		offset = random_offset()
+
+
+func apply_shake() -> void:
+	shake_strength = random_strength
+	timer = Timer.new()
+	timer.wait_time = shaking_length
+
+
+func random_offset() -> Vector2:
+	return Vector2(rng.randf_range(-shake_strength, -shake_strength), rng.randf_range(-shake_strength, -shake_strength))
+
+
+func stop_shaking() -> void:
+	is_shaking = false</code></pre><br>
+
+							<h3>Doors</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/mkrIcYp35UA" 
+							title="YouTube video player"></iframe>
+							<p>
+								Doors are an important part of the game as they have to limit the player vision, once opened they give vision, when closed they block it. They are opened by the player when he is close enough to them and presses the action button. 
+								As player can spam the open button it has been adjusted, so it is bug proof. Starting from the bottom, two functions check and adjust the bool value depending if player is in collision range, thanks to that it can be verified how close is the player. 
+								The process fucntions verifies that bool and manages the door. It plays the animation, disables the collision, plays the sound and changes the bool value. The code for all of this is shown below.
+								The code for this is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Node2D
+
+
+@export var is_closed = true
+@export var flip_h = false
+@export var open_anim_name = "open"
+@export var close_anim_name = "close"
+@export var is_exit : bool = false
+
+var player_in_range = false
+@onready var animated_sprite = $Static/AnimatedSprite2D
+@onready var door_collision = $Static/CollisionShape2D
+
+
+func _process(_delta):
+	animated_sprite.animation = open_anim_name
+	animated_sprite.flip_h = flip_h
+	if Input.is_action_just_pressed("open_door") && player_in_range:
+		await manage_door()
+
+func manage_door():
+	if is_closed && !animated_sprite.is_playing():
+		animated_sprite.play(open_anim_name)
+		AudioPlayer.play_sfx("door_open")
+		await animated_sprite.animation_finished
+		
+		if is_exit:
+			AudioPlayer.play_sfx("scene_switch")
+			get_tree().change_scene_to_packed(exit_scene)
+		door_collision.disabled = true
+		manage_oclussion()
+		is_closed = false
+	elif !is_closed && !animated_sprite.is_playing():
+		animated_sprite.play_backwards(open_anim_name)
+		door_collision.disabled = false
+		AudioPlayer.play_sfx("door_close")
+		await animated_sprite.animation_finished
+		manage_oclussion()
+		is_closed = true
+
+func try_get_child(child_name: String) -> Node:
+	if has_node(child_name):
+		return get_node(child_name)
+	else:
+		return null
+		
+
+func manage_oclussion():
+	var oclussion = try_get_child("LightOccluder2D")
+	if oclussion != null:
+		oclussion.visible  = not oclussion.visible 
+
+
+func _on_area_to_open_body_entered(body):
+	if body is Player:
+		player_in_range = true
+
+
+func _on_area_to_open_body_exited(body):
+	if body is Player:
+		player_in_range = false</code></pre><br>
+
+                            <h3>Key takeouts</h3>
+                            <p>
+								This game jam was a first time encounter with Godot Engine, where I have learned a lot about it and fell in love with it regarding game jam projects. It was 2 weeks of work on the game as a team of 2 people. 
+								I have learned a lot about what makes the game interesting and how to make it more dynamic - how things like sounds or visual effects add quality and make the game more enjoyable. 
+								I have learned how to make shaders, how to make them reusable and how to use them in the game. I have learned some level design and what wasn't redeable by players, which is the best learned by doing like in this case. 
+								Learning how much time different things take, how to manage it, planning or brainstorming are also important things that I have deepened during this project. To summarize I will say that I have learned a lot 
+								about game programming, design and development in general. Also I got inspired to make more games and take part in at least 3 more game jams this year.
+							</p>
+							</p>
+							</p>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>Contact</h2>
+								<p><b>Did you like my projects?</b>
+									If so, <b>feel free to contact me</b> for potential collaboration - permanent work or outsourcing.</p>
+								<ul class="icons">
+									<li><a href="https://github.com/Salach-Malejkum" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="https://www.linkedin.com/in/mateusz-salach1/" class="icon brands style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="mailto:mateuszsalach00@gmail.com" class="icon solid style2 fa-envelope" id="emailLink"><span class="label">Email</span></a></li>
+									<script src="assets/js/copymail.js"></script>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
