@@ -1,0 +1,314 @@
+<!DOCTYPE HTML>
+<!--
+	Phantom by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Lemur Logic Adventure</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-gdscript.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-c.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-cpp.min.js"></script>
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+				<header id="header">
+					<div class="inner">
+
+						<!-- Logo -->
+							<a href="../index.html" class="logo">
+								<span class="symbol"><img src="../images/portfolio_img.png" alt="" /></span><span class="title">Portfolio</span>
+							</a>
+
+						<!-- Nav -->
+							<nav>
+								<ul>
+									<li><a href="#menu">Menu</a></li>
+								</ul>
+							</nav>
+
+					</div>
+				</header>
+
+			<!-- Menu -->
+				<nav id="menu">
+					<h2>Menu</h2>
+					<ul>
+						<li><a href="../../index.html">Home</a></li>
+						<li><a href="../subpages/lemur_adventure.html">Lemur Logic Adventure</a></li>
+						<li><a href="../subpages/mineventurer.html">MineVenturer</a></li>
+						<li><a href="../subpages/the_blessed_ones.html">The Blessed Ones</a></li>
+						<li><a href="../subpages/moba2v2.html">Moba 2v2</a></li>
+						<li><a href="../subpages/sugarwar.html">Sugar War</a></li>
+						<li><a href="../subpages/memory.html">Memo Game</a></li>
+						<li><a href="../subpages/platformer2d.html">Platformer 2D</a></li>
+						<li><a href="../subpages/bigmode.html">Nightmare Platformer</a></li>
+						<li><a href="../subpages/space_invader.html">Space Invader</a></li>
+						<li><a href="../subpages/zombie_shooter.html">Survive If You Can</a></li>
+					</ul>
+				</nav>
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+							<h1>Lemur Logic Adventure</h1>
+							<span class="image main"><img src="/gifs/lemur_adventure/main_menu.jpg" alt="" /></span>
+							<h2>Technical details</h2>
+                            <p style="margin-bottom: 0;"><b>Engine:</b> Godot<br>
+							<b>Version:</b> 4.3<br>
+							<b>Genre:</b> Turn-based tower defence<br>
+							<b>Team of 4 people:</b><ul style="list-style-type: disc; padding-left: 40px; margin-top: 0; margin-bottom: 0;">
+								<li>me as a programmer, audio designer, game designer,</li>
+								<li>my friend as a 2D artist,</li>
+								<li>newly met 2 programmers.</li>
+							</ul>
+                            <p><b>Assets: </b>Created by my team member, from itch.io and audio from Zapsplat<br>
+							<b>Itch.io: </b><a href="https://legitcheems.itch.io/lemur-logic-adventure">Link</a><br>
+							<b>Code: </b><a href="https://github.com/pffcio/Ciasne14-LemurLogicAdventure">Link</a></p>
+
+                            <h2>Description</h2>
+                            <p>The game was created for <b>HackYeah 2024</b>, during 24h. We have created a game for a theme, <b>the family of lemurs</b>, where we chose to go with education sub-theme. We wanted to teach the basics of 
+								logic and logic gates through gameplay. Basics are taught through an interactive quiz, while logic gates are taught through a tower defence game. My responsibilities focused on entire UI, programming the 
+								tower defence, entire audio expect the quiz sounds. The idea was to include logic gates where player would place towers on different squares connected to logic gates to gain some buffs. The game is in Polish language as it was required by the rules.
+								 The game was created in Godot Engine 4.3.</p>
+
+                            <h3>Tower</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/mCwlRikX0sQ" 
+							title="YouTube video player"></iframe>
+							<p>
+								First thing I programmed was the tower and it's behaviour. The tower has a range, which is shown by the circle around it. 
+								When the enemy is in the range, the tower is shooting at it. The tower has a specific attack speed, which can be changed in the editor. Also it focuses on the first enemy that enters the range, 
+								changing the target only when the current one is out of range or dead. In the <i>_process</i> function there are 3 states: no enemies in range, current_enemy is not set and attack. The code for this is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Node2D
+
+class_name Tower
+
+@export var animated_sprite: AnimatedSprite2D
+var enemy_in_range_list: Array[Enemy] = []
+var current_enemy: Enemy = null
+var timer = Timer.new()
+
+func _ready():
+	(...)
+
+
+func _process(delta):
+	if current_enemy == null && len(enemy_in_range_list) == 0:
+		return
+	
+	elif current_enemy != null && len(enemy_in_range_list) == 0:
+		animated_sprite.stop()
+		timer.stop()
+		current_enemy = null
+		
+	elif current_enemy != null:
+		if do_rotation:
+			animated_sprite.look_at(current_enemy.global_position)
+			animated_sprite.rotation_degrees -= 90
+		if timer.is_stopped():
+			timer.start()
+		
+	else:
+		_assign_curr_enemy()
+		animated_sprite.play()
+	
+
+# Enemy entered the range
+func _on_range_area_entered(area: Node2D):
+	if is_instance_of(area, Enemy):
+		enemy_in_range_list.append(area)
+
+
+# Enemy exited the range
+func _on_range_area_exited(area: Node2D):
+	if area in enemy_in_range_list:
+		enemy_in_range_list.erase(area)
+
+
+# Remove enemy on death
+func _on_enemy_died(enemy: Enemy):
+	if enemy in enemy_in_range_list:
+		enemy_in_range_list.erase(enemy)
+
+
+# Get the first enemy in the range
+func _assign_curr_enemy():
+	current_enemy = enemy_in_range_list[0]
+
+
+func _attack():	
+	(...)</code></pre><br>
+
+							<h3>Tower placement UI</h3>
+							<iframe width="560" height="315" src="https://www.youtube.com/embed/X8OLc4oRMGg" 
+							title="YouTube video player"></iframe>
+							<p>
+								Here is the script responsible for tower placement UI. The script is attached to the button that is responsible for each of the tower placement. 
+								When the button is clicked and holded, the temporary tower is instantiated and follows the mouse. Depending on where the mouse is, the tower is shown in red if it is on the enemy path or in white if it is not.
+								When the left mouse button is released, the tower is placed on the map. The tower can be placed only on the place that is not path, neither is UI. The code for this is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">extends Panel
+
+# Tower scene associated with button
+@export var tower_scene: PackedScene
+@export var tower_type: String
+var curr_tile
+
+
+func _on_gui_input(event):
+	# Instantiate temporary tower for placing visualisation
+	var tempTower = tower_scene.instantiate()
+	tempTower.set_z_index(10)
+	var root_scene = get_tree().get_root()
+	
+	# Get the tile at tilemap for the current tower position
+	var mapPath: TileMapLayer = root_scene.get_child(root_scene.get_child_count() - 1).get_node("Path")
+	var mapPathRect = mapPath.get_used_rect()
+	var tile = mapPath.local_to_map(get_global_mouse_position())
+	
+	
+	# Check if the tile is on the enemy walk path - as our designer created 3 tilemaps for each of the parts of game it had to be checked whether the tile is on "Path"
+	var is_on_path = (mapPathRect.position.x <= tile.x && tile.x <= mapPathRect.size.x) && (mapPathRect.position.y <= tile.y && tile.y <= mapPathRect.position.y + mapPathRect.size.y - 1)
+	
+	# On left mouse button click add the temporary tower to the scene
+	if event is InputEventMouseButton && event.button_mask == 1:
+		add_child(tempTower)
+		tempTower.process_mode = Node.PROCESS_MODE_DISABLED
+	
+	# On left mouse button hold and mouse movement show the temporary tower and check if it is on the path
+	elif event is InputEventMouseMotion && event.button_mask == 1:
+		if get_child_count() > 2:
+			get_child(2).global_position = event.global_position
+			get_child(2).get_node("Area").show()
+			if is_on_path:
+				get_child(2).get_node("Area").modulate = Color(255, 0, 0, 0.2)
+			else:
+				get_child(2).get_node("Area").modulate = Color(255, 255, 255, 0.2)
+
+	# On left mouse button release check if the tower can be placed and place it
+	elif event is InputEventMouseButton && event.button_mask == 0:
+		if get_child_count() > 2:
+			get_child(2).queue_free()
+			
+		
+		if event.global_position.x < 900:
+			if !is_on_path:
+				var path = root_scene.get_child(root_scene.get_child_count() - 1).get_node("Towers")
+				
+				path.add_child(tempTower)
+				tempTower.global_position = event.global_position
+				tempTower.get_node("Area").hide()
+				AudioPlayer.play_sfx("build_tower")
+	else:
+		if get_child_count() > 2:
+			get_child(2).queue_free()</code></pre><br>
+
+							<h3>Audio System extended</h3>
+							<p>
+								Here I have extended the audio system functionality from <i><a href='https://salach-malejkum.github.io/portfolio/subpages/theblessedones.html'>The Blessed Ones</a></i> project, I have added random change of pitch for sound effects - here it was for attacks. 
+								Then I have added music change based on the game state - menu, pause, wave, prepare phase, which was achieved by signals - the Observer pattern. The code for this is shown below.
+							</p>
+							<pre class="code-block"><code class="language-gdscript">var pitch_array = [0.9, 1.0, 1.1]
+							
+
+# Function to randomly change the pitch of the sound effect
+func play_pitch_sfx(sfx_name: String):
+	if sfx.has(sfx_name):
+		var asp = AudioStreamPlayer.new()
+		asp.stream = sfx[sfx_name]
+		asp.name = "SFX"
+		var pitch = pitch_array.pick_random()
+		print(pitch)
+		asp.pitch_scale = pitch
+		asp = add_to_bus(asp, sfx_name)
+		
+		add_child(asp)
+		asp.play()
+		
+		await asp.finished
+		asp.queue_free()
+
+
+# Function to manage signal of enter / exit menu
+func _on_is_menu(value: bool):
+	if (value):
+		play_music("menu_music")
+	else:
+		curr_music.queue_free()
+
+
+# Function to manage signal of enter / exit pause menu
+func _on_is_paused(value: bool):
+	if (value):
+		play_music("pause_music")
+	else:
+		curr_music.queue_free()
+	
+
+# Function to manage signal of enter / exit penguin wave
+func _on_is_wave(value: bool):
+	if (value):
+		play_music("wave_music")
+	elif (!value && curr_music != null):
+		curr_music.queue_free()
+	
+
+# Function to manage signal of enter / exit prepare phase
+func _on_is_prepare(value: bool):
+	if (value):
+		play_music("prepare_music")
+	elif (!value && curr_music != null):
+		curr_music.queue_free()</code></pre><br>
+
+                            <h3>Key takeouts</h3>
+                            <p>
+								Another 24h game jam, but this time the theme did not fit me so well, but I think that we have managed to create a game that is fun and educational. Also it has a lot of potential and features, also building on the code from previous projects.
+								Extension of audio system, UI - these things are polished and extended 3rd time looking at previous projects. First time I have tried my hand at tower defence game, which was a great experience and thought me a lot about game design and programming. 
+								I have extended my knowledge regarding Observer pattern and signals in Godot Engine, which right now is pretty handy for me. Also management of inputs and masks regarding Mouse events was a new thing for me, which I have learned and used in this project. 
+								I have previously managed GUI events but not that much of mouse events, so it was a great experience for me. I am looking forward to use this knowledge in future projects. Task planning and estimation or needs regarding the project also increased my knowledge and experience in project management.
+							</p>
+						</div>
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<div class="inner">
+							<section>
+								<h2>Contact</h2>
+								<p><b>Did you like my projects?</b>
+									If so, <b>feel free to contact me</b> for potential collaboration - permanent work or outsourcing.</p>
+								<ul class="icons">
+									<li><a href="https://github.com/Salach-Malejkum" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+									<li><a href="https://www.linkedin.com/in/mateusz-salach1/" class="icon brands style2 fa-linkedin"><span class="label">LinkedIn</span></a></li>
+									<li><a href="mailto:mateuszsalach00@gmail.com" class="icon solid style2 fa-envelope" id="emailLink"><span class="label">Email</span></a></li>
+									<script src="assets/js/copymail.js"></script>
+								</ul>
+							</section>
+							<ul class="copyright">
+								<li>&copy; Untitled. All rights reserved</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+							</ul>
+						</div>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
